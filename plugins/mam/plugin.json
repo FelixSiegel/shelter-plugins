@@ -1,0 +1,6 @@
+{
+  "name": "MAM",
+  "author": "InfinityCoding",
+  "description": "Custom GIF picker for the MAM gif library",
+  "entrypoint": "index.jsx"
+}
