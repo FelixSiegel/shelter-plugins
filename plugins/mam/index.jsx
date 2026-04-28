@@ -28,7 +28,7 @@ const {
 		niceScrollbarsClass,
 		showToast
 	},
-	util: { genId, log }
+	util: { log }
 } = shelter;
 
 const MAM_LABEL = "MAM";
@@ -687,7 +687,7 @@ function MamView() {
 }
 
 export function settings() {
-	const apiKeyId = genId();
+	const apiKeyId = "mam-api-key-input";
 
 	return (
 		<div style={{display: "flex", flexDirection: "column", gap: "12px"}}>
