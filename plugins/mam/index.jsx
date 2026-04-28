@@ -347,7 +347,7 @@ function GifTile(props) {
 			<img
 				src={props.gif.public_url}
 				loading="lazy"
-				style={{display: "block", width: "100%", height: "auto", borderRadius: "8px"}}
+				style={{display: "block", width: "100%", height: "auto", "border-radius": "8px"}}
 			/>
 		</button>
 	);
@@ -554,7 +554,7 @@ function MamView() {
 		];
 
 		return (
-			<div style={{display: "grid", gap: "8px", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))"}}>
+			<div style={{display: "grid", gap: "8px", "grid-template-columns": "repeat(auto-fill, minmax(160px, 1fr))"}}>
 				<For each={entries}>{entry => {
 					const active = (viewMode() === "all" && entry.id === null) || (viewMode() === "list" && selectedListId() === entry.id);
 					const previewUrl = listPreviews()[entry.key] ?? null;
@@ -583,8 +583,8 @@ function MamView() {
 							aria-label={entry.name}
 							title={entry.name}
 						>
-							<Show when={previewUrl} fallback={<div style={{width: "100%", height: "100%", backgroundColor: "var(--background-tertiary)"}} />}>
-								<img src={previewUrl} loading="lazy" style={{width: "100%", height: "100%", objectFit: "cover"}} />
+							<Show when={previewUrl} fallback={<div style={{width: "100%", height: "100%", "background-color": "var(--background-tertiary)"}} />}>
+								<img src={previewUrl} loading="lazy" style={{width: "100%", height: "100%", "object-fit": "cover"}} />
 							</Show>
 							<div style={{
 								position: "absolute",
@@ -592,7 +592,7 @@ function MamView() {
 								left: 0,
 								right: 0,
 								bottom: 0,
-								backgroundColor: active ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.35)",
+							"background-color": active ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.35)",
 								transition: "background-color 0.2s"
 							}} />
 							<div style={{
@@ -601,10 +601,10 @@ function MamView() {
 								left: "50%",
 								transform: "translate(-50%, -50%)",
 								color: "white",
-								fontWeight: 700,
-								textShadow: "0 0 4px rgba(0,0,0,0.8)",
-								pointerEvents: "none",
-								textAlign: "center",
+							"font-weight": 700,
+							"text-shadow": "0 0 4px rgba(0,0,0,0.8)",
+							"pointer-events": "none",
+							"text-align": "center",
 								padding: "0 8px"
 							}}>
 								{entry.name}
@@ -617,40 +617,55 @@ function MamView() {
 	};
 
 	return (
-		<div style={{display: "flex", flexDirection: "column", height: "100%", overflow: "hidden"}}>
-			<div style={{padding: "8px 12px", display: "flex", gap: "8px", alignItems: "center"}}>
+		<>
+			<style>{`
+				.mam-container { display: flex !important; flex-direction: column !important; height: 100% !important; overflow: hidden !important; }
+				.mam-header-row { display: flex !important; flex-direction: row !important; gap: 8px !important; align-items: center !important; padding: 8px 12px !important; }
+				.mam-search-container { border-radius: 16px !important; overflow: hidden !important; }
+				.mam-search-input { color: #ffffff !important; background: transparent !important; border: none !important; }
+				.mam-search-input::placeholder { color: var(--text-muted) !important; }
+			`}</style>
+			<div class="mam-container">
+				{/* Header with back button and search */}
+				<div class="mam-header-row">
 				<Show when={viewMode() !== "categories"}>
-					<Button size={ButtonSizes.SMALL} color={ButtonColors.SECONDARY} onClick={() => {
-						setQuery("");
-						setSelectedListId(null);
-						setViewMode("categories");
-					}}>
-						Back
+					<Button
+						size={ButtonSizes.SMALL}
+						color={ButtonColors.PRIMARY}
+						onClick={() => {
+							setQuery("");
+							setSelectedListId(null);
+							setViewMode("categories");
+						}}
+						aria-label="Back to categories"
+						title="Back"
+					>
+						<svg class="mam-back-icon" role="img" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M10 8.26667V4L3 11.4667L10 18.9333V14.56C15 14.56 18.5 16.2667 21 20C20 14.6667 17 9.33333 10 8.26667Z"></path></svg>
 					</Button>
 				</Show>
 				<Show when={viewMode() !== "list"}>
-					<div style={{display: "flex", alignItems: "center", gap: "8px", flex: 1}}>
-						<TextBox
+					<div class="mam-search-container" style={{flex: 1, display: "flex", "align-items": "center", gap: "6px", height: "32px", padding: "0 10px", "background-color": "var(--background-secondary)", border: searchFocused() ? "2px solid var(--brand-500)" : "2px solid var(--background-tertiary)", transition: "border-color 0.15s ease", "line-height": "0", "box-sizing": "border-box"}}>
+						<svg width="16" height="16" viewBox="0 0 24 24" role="img" aria-hidden="true" style={{color: "var(--text-muted)", flex: "0 0 16px", display: "flex", "align-items": "center", "justify-content": "center"}}>
+							<path fill="currentColor" d="M10.5 3a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Zm8.85 12.44 3.2 3.2a1 1 0 0 1-1.42 1.42l-3.2-3.2a1 1 0 0 1 1.42-1.42Z"/>
+						</svg>
+						<input
 							value={query()}
 							placeholder="Search GIFs"
-							onInput={setQuery}
+							onInput={e => setQuery(e.currentTarget.value)}
 							onFocus={() => setSearchFocused(true)}
 							onBlur={() => setSearchFocused(false)}
 							type="text"
-							style={{
-								flex: 1,
-								boxShadow: searchFocused() ? "0 0 0 2px var(--brand-500)" : "none"
-							}}
+							class="mam-search-input"
+							style={{flex: 1, height: "100%", "font-size": "14px", outline: "none"}}
 						/>
 						<Show when={query() !== ""}>
-							<Button
-								size={ButtonSizes.SMALL}
-								color={ButtonColors.SECONDARY}
+							<button
 								onClick={() => setQuery("")}
+								style={{border: "none", background: "transparent", color: "var(--text-muted)", cursor: "pointer", padding: 0, "font-size": "16px", "line-height": 1}}
 								aria-label="Clear search"
 							>
 								×
-							</Button>
+							</button>
 						</Show>
 					</div>
 				</Show>
@@ -666,13 +681,13 @@ function MamView() {
 				<div style={{padding: "8px 16px 12px"}}>
 					<Show when={showCategories()} fallback={
 						<Show when={!initialLoading()} fallback={<Text tag={TextTags.textSM}>Loading…</Text>}>
-							<Show when={items().length > 0} fallback={<Text tag={TextTags.textSM}>{selectedListId() === null ? "No results." : "No items in this list."}</Text>}>
-								<div style={{columnWidth: "160px", columnGap: "8px"}}>
+							<Show when={items().length > 0} fallback={<div style={{width: "100%", display: "flex", "justify-content": "center", padding: "8px 0"}}><Text tag={TextTags.textSM}>{selectedListId() === null ? "No results." : "No items in this list."}</Text></div>}>
+								<div style={{"column-width": "160px", "column-gap": "8px"}}>
 									<For each={items()}>{gif => <GifTile gif={gif} />}</For>
 								</div>
 							</Show>
 							<Show when={loadingMore()}>
-								<Text tag={TextTags.textXS} style={{textAlign: "center", padding: "8px 0 4px", opacity: 0.6}}>
+								<Text tag={TextTags.textXS} style={{"text-align": "center", padding: "8px 0 4px", opacity: 0.6}}>
 									Loading…
 								</Text>
 							</Show>
@@ -683,6 +698,7 @@ function MamView() {
 				</div>
 			</div>
 		</div>
+		</>
 	);
 }
 
