@@ -10,7 +10,8 @@ const {
 		createEffect,
 		createMemo,
 		createSignal,
-		onCleanup
+		onCleanup,
+		untrack
 	},
 	solidWeb: { render: renderSolid },
 	ui: {
@@ -382,7 +383,7 @@ function MamView() {
 
 	createEffect(() => {
 		const queryValue = debouncedQuery().trim();
-		if (queryValue && viewMode() !== "all") setViewMode("all");
+		if (queryValue && untrack(viewMode) !== "all") setViewMode("all");
 	});
 
 	createEffect(() => {
@@ -634,8 +635,8 @@ function MamView() {
 						color={ButtonColors.PRIMARY}
 						onClick={() => {
 							setQuery("");
-							setSelectedListId(null);
 							setViewMode("categories");
+							setSelectedListId(null);
 						}}
 						aria-label="Back to categories"
 						title="Back"
