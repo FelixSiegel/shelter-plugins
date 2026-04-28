@@ -38,7 +38,7 @@ const MAM_BOUND_ATTR = "data-shelter-mam-bound";
 const MAM_PANEL_ID_ATTR = "data-shelter-mam-panel-id";
 const MAM_TAB_ID_ATTR = "data-shelter-mam-tab-id";
 const MAM_OWNER_ATTR = "data-shelter-mam-owner";
-const API_BASE_URL = "https://www.midevelopment.de";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 store.apiKey ??= "";
 
@@ -688,41 +688,61 @@ function MamView() {
 
 export function settings() {
 	const apiKeyId = "mam-api-key-input";
+	const [apiFocused, setApiFocused] = createSignal(false);
 
 	return (
-		<div style={{display: "flex", flexDirection: "column", gap: "12px"}}>
-			<Header tag={HeaderTags.HeadingLG}>MAM</Header>
-			<Text tag={TextTags.textSM} weight={TextWeights.normal} style={{opacity: 0.8}}>
-				Add your API key to browse MAM GIF lists and search the library.
-			</Text>
-			<Divider />
-			<div style={{display: "flex", flexDirection: "column", gap: "8px"}}>
-				<label for={apiKeyId}>
-					<Text tag={TextTags.textSM} weight={TextWeights.semibold}>API key</Text>
-				</label>
-				<TextBox
-					id={apiKeyId}
-					value={store.apiKey}
-					type="password"
-					placeholder="Paste your MAM API key"
-					onInput={value => {
-						store.apiKey = value;
-					}}
-					autocomplete="off"
-					spellcheck={false}
-				/>
-				<div style={{display: "flex", gap: "8px", alignItems: "center"}}>
-					<Button size={ButtonSizes.SMALL} color={ButtonColors.SECONDARY} onClick={() => {
-						store.apiKey = "";
-					}}>
-						Clear key
-					</Button>
-					<Text tag={TextTags.textXS} style={{opacity: 0.7}}>
-						Stored locally in Shelter.
-					</Text>
+		<>
+			<style>{`
+				.mam-settings { display: block !important; width: 100%; padding: 8px 0 10px; }
+				.mam-settings * { flex-direction: column !important; }
+				.mam-card { display: block !important; width: 100%; max-width: 760px; padding: 16px; background: linear-gradient(160deg, var(--background-secondary) 0%, var(--background-primary) 100%)); border: 1px solid var(--border-subtle); box-sizing: border-box; }
+				.mam-title { display: block !important; margin: 0; color: var(--header-primary); font-size: 22px; line-height: 1.2; font-weight: 700; }
+				.mam-desc { display: block !important; margin: 8px 0 0; color: var(--text-normal); opacity: 0.9; line-height: 1.45; font-size: 14px; max-width: 560px; }
+				.mam-label { display: block !important; width: 100%; margin: 14px 0 8px 0; color: var(--header-secondary); font-size: 13px; font-weight: 700; letter-spacing: 0.2px; line-height: 1.25; }
+				.mam-input-wrapper { display: block !important; width: 100%; padding: 1px; border-radius: 12px; border: 1px solid var(--border-subtle); box-sizing: border-box; }
+				.mam-input { display: block !important; width: 100%; padding: 11px 12px; border: none; background: linear-gradient(180deg, color-mix(in oklab, var(--background-tertiary) 90%, black), var(--background-tertiary)); color: var(--text-normal); font-size: 14px; line-height: 1.3; font-family: inherit; letter-spacing: 0.2px; outline: none; appearance: none; box-sizing: border-box; }
+				.mam-helper { display: block !important; width: 100%; margin: 10px 0 8px 0; opacity: 0.8; color: var(--text-muted); font-size: 12px; line-height: 1.35; }
+				.mam-actions { display: block !important; width: 100%; }
+			`}</style>
+			<div class="mam-settings">
+				<div class="mam-card">
+					<h3 class="mam-title">MAM API</h3>
+					<p class="mam-desc">Add your API key to browse MAM GIF lists and search the library.</p>
+					<label for={apiKeyId} class="mam-label">API key</label>
+					<div
+						class="mam-input-wrapper"
+						style={{
+							backgroundColor: apiFocused() ? "var(--brand-500)" : "var(--border-subtle)",
+							transition: "background-color 0.15s ease, box-shadow 0.15s ease",
+							boxShadow: apiFocused() ? "0 0 0 3px color-mix(in oklab, var(--brand-500) 30%, transparent)" : "none"
+						}}
+					>
+						<input
+							id={apiKeyId}
+							value={store.apiKey}
+							type="password"
+							placeholder="Paste your MAM API key"
+							onInput={event => {
+								store.apiKey = event.currentTarget.value;
+							}}
+							onFocus={() => setApiFocused(true)}
+							onBlur={() => setApiFocused(false)}
+							autocomplete="off"
+							spellcheck="false"
+							class="mam-input"
+						/>
+					</div>
+					<div class="mam-helper">Stored locally in Shelter.</div>
+					<div class="mam-actions">
+						<Button size={ButtonSizes.SMALL} color={ButtonColors.SECONDARY} onClick={() => {
+							store.apiKey = "";
+						}}>
+							Clear key
+						</Button>
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
